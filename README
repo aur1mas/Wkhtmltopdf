@@ -1,6 +1,11 @@
 About
 -----
-A PHP library which helps working with WKHTMLTOPDF <http://code.google.com/p/wkhtmltopdf/>
+A PHP class which helps working with WKHTMLTOPDF <http://code.google.com/p/wkhtmltopdf/>
+
+This class is based on <http://code.google.com/p/wkhtmltopdf/wiki/IntegrationWithPhp>
+class.
+
+I have removed $_GLOBALS & other static configuration options.
 
 Author
 ------
