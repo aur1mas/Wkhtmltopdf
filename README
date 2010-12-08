@@ -3,9 +3,21 @@ About
 
 Author
 ------
+Aurimas Baubkus aka aur1mas <aur1mas@devnet.lt>
+Released under "New BSD license"
 
 Usage
 -----
+<?php
+    try {
+        $wkhtmltopdf = new Core_Wkhtmltopdf(array('path' => APPLICATION_PATH . '/../public/uploads/'));
+        $wkhtmltopdf->setTitle("Title");
+        $wkhtmltopdf->setHtml("Content");
+        $wkhtmltopdf->output(Wkhtmltopdf::MODE_DOWNLOAD, "file.pdf");
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+?>
 
 Feedback
 --------
