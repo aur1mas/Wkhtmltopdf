@@ -382,7 +382,7 @@ class Wkhtmltopdf
      * @throws Exception
      * @return string
      */
-    public function _render()
+    protected function _render()
     {
         if (mb_strlen($this->_html, 'utf-8') === 0)
             throw new Exception("HTML content not set");
