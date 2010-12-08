@@ -1,5 +1,6 @@
 About
 -----
+A PHP library which helps working with WKHTMLTOPDF <http://code.google.com/p/wkhtmltopdf/>
 
 Author
 ------
@@ -18,6 +19,8 @@ Usage
         echo $e->getMessage();
     }
 ?>
+On Gist: https://gist.github.com/733109
 
 Feedback
 --------
+Issue tracker: https://github.com/aur1mas/Wkhtmltopdf/issues
