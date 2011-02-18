@@ -3,6 +3,7 @@
  * @author aur1mas <aur1mas@devnet.lt>
  * @copyright aur1mas <aur1mas@devnet.lt>
  * @license http://framework.zend.com/license/new-bsd     New BSD License
+ * @version 1.00
  */
 class Wkhtmltopdf
 {
@@ -11,7 +12,7 @@ class Wkhtmltopdf
      * setters / getters properties
      */
     protected $_html = null;
-    protected $_orienation = null;
+    protected $_orientation = null;
     protected $_pageSize = null;
     protected $_toc = false;
     protected $_copies = 1;
@@ -219,7 +220,7 @@ class Wkhtmltopdf
      */
     public function setOrientation($orientation)
     {
-        $this->_orienation = (string)$orientation;
+        $this->_orientation = (string)$orientation;
         return $this;
     }
 
@@ -231,7 +232,7 @@ class Wkhtmltopdf
      */
     public function getOrientation()
     {
-        return $this->_orienation;
+        return $this->_orientation;
     }
 
     /**
