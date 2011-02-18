@@ -16,7 +16,7 @@ class Wkhtmltopdf
     protected $_pageSize = null;
     protected $_toc = false;
     protected $_copies = 1;
-    protected $_greyscale = false;
+    protected $_grayscale = false;
     protected $_title = null;
     protected $_path;               // path to directory where to place files
 
@@ -73,7 +73,7 @@ class Wkhtmltopdf
         }
 
         if (array_key_exists('grayscale', $options)) {
-            $this->setGreyscale($options['greyscale']);
+            $this->setGrayscale($options['grayscale']);
         }
 
         if (array_key_exists('title', $options)) {
@@ -309,9 +309,9 @@ class Wkhtmltopdf
      * @param boolean $mode
      * @return Core_Wkthmltopdf
      */
-    public function setGreyscale($mode)
+    public function setGrayscale($mode)
     {
-        $this->_greyscale = (boolean)$mode;
+        $this->_grayscale = (boolean)$mode;
         return $this;
     }
 
@@ -321,9 +321,9 @@ class Wkhtmltopdf
      * @author aur1mas <aur1mas@devnet.lt>
      * @return boolean
      */
-    public function getGreyscale()
+    public function getGrayscale()
     {
-        return $this->_greyscale;
+        return $this->_grayscale;
     }
 
     /**
