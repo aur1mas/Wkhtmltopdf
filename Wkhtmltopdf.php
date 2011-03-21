@@ -304,7 +304,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * whether to print in greyscale or not
+     * whether to print in grayscale or not
      * @author aur1mas <aur1mas@devnet.lt>
      * @param boolean $mode
      * @return Core_Wkthmltopdf
@@ -316,7 +316,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns is page will be printed in greyscale format
+     * returns is page will be printed in grayscale format
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return boolean
@@ -368,7 +368,7 @@ class Wkhtmltopdf
         $command .= " --orientation " . $this->getOrientation();
         $command .= " --page-size " . $this->getPageSize();
         $command .= ($this->getTOC()) ? " --toc" : "";
-        $command .= ($this->getGreyscale()) ? " --greyscale" : "";
+        $command .= ($this->getGrayscale()) ? " --grayscale" : "";
         $command .= ' --title "' . $this->getTitle() . '"';
         $command .= ' "' . $this->getFilePath() . '"';
         $command .= " -";
