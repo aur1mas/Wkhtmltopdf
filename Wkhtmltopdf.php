@@ -72,6 +72,10 @@ class Wkhtmltopdf
             $this->setTOC($options['toc']);
         }
 
+        if (array_key_exists('binpath', $options)) {
+            $this->setBinPath($options['binpath']);
+        }
+
         if (array_key_exists('grayscale', $options)) {
             $this->setGrayscale($options['grayscale']);
         }
@@ -278,6 +282,33 @@ class Wkhtmltopdf
     public function getTOC()
     {
         return $this->_toc;
+    }
+    
+    /**
+     * returns bin path
+     * 
+     * @author heliocorreia <dev@heliocorreia.org>
+     * @return string
+     */
+    public function getBinPath()
+    {
+    	return $this->_bin;
+    }
+    
+    /**
+     * returns bin path
+     * 
+     * @author heliocorreia <dev@heliocorreia.org>
+     * @return string
+     */
+    public function setBinPath($path)
+    {
+    	if (file_exists($path))
+    	{
+    		$this->_bin = (string)$path;
+    	}
+   	
+    	return Core_Wkthmltopdf;
     }
 
     /**
