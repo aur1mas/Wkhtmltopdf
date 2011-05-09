@@ -1,17 +1,17 @@
 <?php
 /**
- * @author aur1mas <aur1mas@devnet.lt>
+ * @author aur1mas <aur1mas@devnet.lt>, Charles SANQUER <charles.sanquer@spyrit.net>
  * @copyright aur1mas <aur1mas@devnet.lt>
  * @license http://framework.zend.com/license/new-bsd     New BSD License
  * @version 1.00
  */
 class Wkhtmltopdf
 {
-
     /**
      * setters / getters properties
      */
     protected $_html = null;
+    protected $_url = null;
     protected $_orientation = null;
     protected $_pageSize = null;
     protected $_toc = false;
@@ -168,7 +168,7 @@ class Wkhtmltopdf
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $html
-     * @return Core_Wkthmltopdf
+     * @return Wkthmltopdf
      */
     public function setHtml($html)
     {
@@ -187,13 +187,37 @@ class Wkhtmltopdf
         return $this->_html;
     }
 
+	/**
+     * set URL to render
+     *
+     * @author Charles SANQUER
+     * @param string $html
+     * @return Wkthmltopdf
+     */
+    public function setUrl($url)
+    {
+        $this->_url = (string) $url;
+        return $this;
+    }
+
+    /**
+     * returns URL
+     *
+     * @author Charles SANQUER
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->_url;
+    }
+    
     /**
      * Absolute path where to store files
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @throws Exception
      * @param string $path
-     * @return Core_Wkthmltopdf
+     * @return Wkthmltopdf
      */
     public function setPath($path)
     {
@@ -220,7 +244,7 @@ class Wkhtmltopdf
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $orientation
-     * @return Core_Wkthmltopdf
+     * @return Wkthmltopdf
      */
     public function setOrientation($orientation)
     {
@@ -242,7 +266,7 @@ class Wkhtmltopdf
     /**
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $size
-     * @return Core_Wkthmltopdf
+     * @return Wkthmltopdf
      */
     public function setPageSize($size)
     {
@@ -265,7 +289,7 @@ class Wkhtmltopdf
      * enable / disable generation Table Of Contents
      * @author aur1mas <aur1mas@devnet.lt>
      * @param boolean $toc
-     * @return Core_Wkhtmltopdf
+     * @return Wkhtmltopdf
      */
     public function setTOC($toc = true)
     {
@@ -286,7 +310,7 @@ class Wkhtmltopdf
     
     /**
      * returns bin path
-     * 
+     *
      * @author heliocorreia <dev@heliocorreia.org>
      * @return string
      */
@@ -297,7 +321,7 @@ class Wkhtmltopdf
     
     /**
      * returns bin path
-     * 
+     *
      * @author heliocorreia <dev@heliocorreia.org>
      * @return string
      */
@@ -308,14 +332,14 @@ class Wkhtmltopdf
     		$this->_bin = (string)$path;
     	}
    	
-    	return Core_Wkthmltopdf;
+    	return $this;
     }
 
     /**
      * set number of copies
      * @author aur1mas <aur1mas@devnet.lt>
      * @param int $copies
-     * @return Core_Wkthmltopdf
+     * @return Wkthmltopdf
      */
     public function setCopies($copies)
     {
@@ -338,7 +362,7 @@ class Wkhtmltopdf
      * whether to print in grayscale or not
      * @author aur1mas <aur1mas@devnet.lt>
      * @param boolean $mode
-     * @return Core_Wkthmltopdf
+     * @return Wkthmltopdf
      */
     public function setGrayscale($mode)
     {
@@ -361,7 +385,7 @@ class Wkhtmltopdf
      * PDF title
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $title
-     * @return Core_Wkthmltopdf
+     * @return Wkthmltopdf
      */
     public function setTitle($title)
     {
@@ -400,8 +424,18 @@ class Wkhtmltopdf
         $command .= " --page-size " . $this->getPageSize();
         $command .= ($this->getTOC()) ? " --toc" : "";
         $command .= ($this->getGrayscale()) ? " --grayscale" : "";
+        /*
+         * ignore some errors with some urls as recommended with this wkhtmltopdf error message
+         *
+         * Error: Failed loading page <url> (sometimes it will work just to ignore this error with --load-error-handling ignore)
+         */
+        if ($this->getUrl())
+        {
+            $command .= ' --load-error-handling ignore';
+        }
+        
         $command .= ' --title "' . $this->getTitle() . '"';
-        $command .= ' "' . $this->getFilePath() . '"';
+        $command .= ' "%input%"';
         $command .= " -";
 
         return $command;
@@ -416,11 +450,20 @@ class Wkhtmltopdf
      */
     protected function _render()
     {
-        if (mb_strlen($this->_html, 'utf-8') === 0)
-            throw new Exception("HTML content not set");
+        if (mb_strlen($this->_html, 'utf-8') === 0 && empty($this->_url))
+            throw new Exception("HTML content or source URL not set");
 
-        file_put_contents($this->getFilePath(), $this->getHtml());
-        $content = $this->_exec($this->_getCommand());
+        if ($this->getUrl())
+        {
+            $input = $this->getUrl();
+        }
+        else
+        {
+            file_put_contents($this->getFilePath(), $this->getHtml());
+            $input = $this->getFilePath();
+        }
+        
+        $content = $this->_exec(str_replace('%input%', $input, $this->_getCommand()));
 
         if (strpos(mb_strtolower($content['stderr']), 'error'))
                 throw new Exception("System error <pre>" . $content['stderr'] . "</pre>");
@@ -444,6 +487,7 @@ class Wkhtmltopdf
         switch ($mode) {
             case self::MODE_DOWNLOAD:
                 if (!headers_sent()) {
+                    $result = $this->_render();
                     header("Content-Description: File Transfer");
                     header("Cache-Control: public; must-revalidate, max-age=0");
                     header("Pragme: public");
@@ -455,9 +499,11 @@ class Wkhtmltopdf
                     header("Content-Type: application/pdf", false);
                     header('Content-Disposition: attachment; filename="' . basename($filename) .'";');
                     header("Content-Transfer-Encoding: binary");
-                    header("Content-Length " . mb_strlen($this->_render()));
-                    echo $this->_render();
-                    unlink($this->getFilePath());
+                    header("Content-Length " . mb_strlen($result));
+                    echo $result;
+                    $filepath = $this->getFilePath();
+                    if (!empty($filepath))
+                        unlink($filepath);
                     exit();
                 } else {
                     throw new Exception("Headers already sent");
@@ -468,15 +514,18 @@ class Wkhtmltopdf
                 break;
             case self::MODE_EMBEDDED:
                 if (!headers_sent()) {
+                    $result = $this->_render();
                     header("Content-type: application/pdf");
                     header("Cache-control: public, must-revalidate, max-age=0");
                     header("Pragme: public");
                     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
                     header("Last-Modified: " . gmdate('D, d m Y H:i:s') . " GMT");
-                    header("Content-Length " . mb_strlen($this->_render()));
+                    header("Content-Length " . mb_strlen($result));
                     header('Content-Disposition: inline; filename="' . basename($filename) .'";');
-                    echo $this->_render();
-                    unlink($this->getFilePath());
+                    echo $result;
+                    $filepath = $this->getFilePath();
+                    if (!empty($filepath))
+                        unlink($filepath);
                     exit();
                 } else {
                     throw new Exception("Headers already sent");
@@ -484,7 +533,9 @@ class Wkhtmltopdf
                 break;
             case self::MODE_SAVE:
                 file_put_contents($filename, $this->_render());
-                unlink($this->getFilePath());
+                $filepath = $this->getFilePath();
+                    if (!empty($filepath))
+                        unlink($filepath);
                 break;
             default:
                 throw new Exception("Mode: " . $mode . " is not supported");
