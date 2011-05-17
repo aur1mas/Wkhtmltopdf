@@ -1,9 +1,10 @@
 <?php
 /**
- * @author aur1mas <aur1mas@devnet.lt>, Charles SANQUER <charles.sanquer@spyrit.net>
+ * @author aur1mas <aur1mas@devnet.lt>
+ * @author Charles SANQUER <charles.sanquer@spyrit.net>
  * @copyright aur1mas <aur1mas@devnet.lt>
  * @license http://framework.zend.com/license/new-bsd     New BSD License
- * @version 1.00
+ * @version 1.10
  */
 class Wkhtmltopdf
 {
@@ -429,8 +430,7 @@ class Wkhtmltopdf
          *
          * Error: Failed loading page <url> (sometimes it will work just to ignore this error with --load-error-handling ignore)
          */
-        if ($this->getUrl())
-        {
+        if ($this->getUrl()) {
             $command .= ' --load-error-handling ignore';
         }
         
