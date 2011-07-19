@@ -16,7 +16,7 @@ Usage
 -----
 <?php
     try {
-        $wkhtmltopdf = new Core_Wkhtmltopdf(array('path' => APPLICATION_PATH . '/../public/uploads/'));
+        $wkhtmltopdf = new Wkhtmltopdf(array('path' => APPLICATION_PATH . '/../public/uploads/'));
         $wkhtmltopdf->setTitle("Title");
         $wkhtmltopdf->setHtml("Content");
         $wkhtmltopdf->output(Wkhtmltopdf::MODE_DOWNLOAD, "file.pdf");
