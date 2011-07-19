@@ -20,6 +20,9 @@ class Wkhtmltopdf
     protected $_grayscale = false;
     protected $_title = null;
     protected $_path;               // path to directory where to place files
+    protected $_footerHtml;
+    protected $_username;
+    protected $_password;
 
     /**
      * path to executable
@@ -84,6 +87,10 @@ class Wkhtmltopdf
         if (array_key_exists('title', $options)) {
             $this->setTitle($options['title']);
         }
+        
+        if (array_key_exists('footer_html', $options)) {
+            $this->setFooterHtml($options['footer_html']);
+        }
 
         if (!array_key_exists('path', $options)) {
             throw new Exception("Path to directory where to store files is not set");
@@ -110,6 +117,7 @@ class Wkhtmltopdf
          * create an empty file
          */
         file_put_contents($this->_filename, $this->getHtml());
+        chmod($this->_filename, 777);
 
         return $this->_filename;
     }
@@ -409,6 +417,78 @@ class Wkhtmltopdf
 
         throw new Exception("Title is not set");
     }
+    
+    /**
+     *  set footer html
+     *
+     * @param string $footer 
+     * @return Wkthmltopdf
+     * @author aur1mas <aur1mas@devnet.lt>
+     */
+    public function setFooterHtml($footer)
+    {
+        $this->_footerHtml = (string)$footer;
+        return $this;
+    }
+    
+    /**
+     * get footer html
+     *
+     * @return string
+     * @author aur1mas <aur1mas@devnet.lt>
+     */
+    public function getFooterHtml()
+    {
+        return $this->_footerHtml;
+    }
+    
+    /**
+     * set http username
+     *
+     * @param string $username 
+     * @return Wkthmltopdf
+     * @author aur1mas <aur1mas@devnet.lt>
+     */
+    public function setUsername($username)
+    {
+        $this->_username = (string)$username;
+        return $this;
+    }
+    
+    /**
+     * get http username
+     *
+     * @return string
+     * @author aur1mas <aur1mas@devnet.lt>
+     */
+    public function getUsername()
+    {
+        return $this->_username;
+    }
+    
+    /**
+     * set http password
+     *
+     * @param string $password 
+     * @return Wkthmltopdf
+     * @author aur1mas <aur1mas@devnet.lt>
+     */
+    public function setPassword($password)
+    {
+        $this->_password = (string)$password;
+        return $this;
+    }
+    
+    /**
+     * get http password
+     *
+     * @return string
+     * @author aur1mas <aur1mas@devnet.lt>
+     */
+    public function getPassword()
+    {
+        return $this->_password;
+    }
 
     /**
      * returns command to execute
@@ -425,13 +505,17 @@ class Wkhtmltopdf
         $command .= " --page-size " . $this->getPageSize();
         $command .= ($this->getTOC()) ? " --toc" : "";
         $command .= ($this->getGrayscale()) ? " --grayscale" : "";
+        $command .= (mb_strlen($this->getPassword()) > 0) ? " --password " . $this->getPassword() . "" : "";
+        $command .= (mb_strlen($this->getUsername()) > 0) ? " --username " . $this->getUsername() . "" : "";
+        $command .= (mb_strlen($this->getFooterHtml()) > 0) ? " --margin-bottom 20 --footer-html \"" . $this->getFooterHtml() . "\"" : "";
+        
         /*
          * ignore some errors with some urls as recommended with this wkhtmltopdf error message
          *
          * Error: Failed loading page <url> (sometimes it will work just to ignore this error with --load-error-handling ignore)
          */
         if ($this->getUrl()) {
-            $command .= ' --load-error-handling ignore';
+            // $command .= ' --load-error-handling ignore';
         }
         
         $command .= ' --title "' . $this->getTitle() . '"';
@@ -453,12 +537,9 @@ class Wkhtmltopdf
         if (mb_strlen($this->_html, 'utf-8') === 0 && empty($this->_url))
             throw new Exception("HTML content or source URL not set");
 
-        if ($this->getUrl())
-        {
+        if ($this->getUrl()) {
             $input = $this->getUrl();
-        }
-        else
-        {
+        } else {
             file_put_contents($this->getFilePath(), $this->getHtml());
             $input = $this->getFilePath();
         }
