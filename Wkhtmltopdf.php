@@ -117,7 +117,7 @@ class Wkhtmltopdf
          * create an empty file
          */
         file_put_contents($this->_filename, $this->getHtml());
-        chmod($this->_filename, 777);
+        chmod($this->_filename, 0777);
 
         return $this->_filename;
     }
