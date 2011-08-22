@@ -580,7 +580,7 @@ class Wkhtmltopdf
                     header("Content-Type: application/pdf", false);
                     header('Content-Disposition: attachment; filename="' . basename($filename) .'";');
                     header("Content-Transfer-Encoding: binary");
-                    header("Content-Length " . mb_strlen($result));
+                    header("Content-Length: " . mb_strlen($result));
                     echo $result;
                     $filepath = $this->getFilePath();
                     if (!empty($filepath))
@@ -601,7 +601,7 @@ class Wkhtmltopdf
                     header("Pragme: public");
                     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
                     header("Last-Modified: " . gmdate('D, d m Y H:i:s') . " GMT");
-                    header("Content-Length " . mb_strlen($result));
+                    header("Content-Length: " . mb_strlen($result));
                     header('Content-Disposition: inline; filename="' . basename($filename) .'";');
                     echo $result;
                     $filepath = $this->getFilePath();
