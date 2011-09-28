@@ -613,7 +613,7 @@ class Wkhtmltopdf
                 }
                 break;
             case self::MODE_SAVE:
-                file_put_contents($filename, $this->_render());
+                file_put_contents($this->getPath() . $filename, $this->_render());
                 $filepath = $this->getFilePath();
                     if (!empty($filepath))
                         unlink($filepath);
