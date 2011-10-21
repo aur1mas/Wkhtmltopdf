@@ -96,6 +96,11 @@ class Wkhtmltopdf
             throw new Exception("Path to directory where to store files is not set");
         }
 
+        if (!is_writable($options['path']))
+        {
+            throw new Exception("Path to directory where to store files is not writable");
+        }
+        
         $this->setPath($options['path']);
 
         $this->_createFile();
