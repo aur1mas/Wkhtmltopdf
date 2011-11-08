@@ -2,8 +2,10 @@
 /**
  * @author aur1mas <aur1mas@devnet.lt>
  * @author Charles SANQUER <charles.sanquer@spyrit.net>
+ * @author Clement Herreman <clement.herreman@pictime.com>
  * @copyright aur1mas <aur1mas@devnet.lt>
  * @license http://framework.zend.com/license/new-bsd     New BSD License
+ * @see Repository: https://github.com/aur1mas/Wkhtmltopdf
  * @version 1.10
  */
 class Wkhtmltopdf
@@ -23,6 +25,7 @@ class Wkhtmltopdf
     protected $_footerHtml;
     protected $_username;
     protected $_password;
+    protected $_margins;
 
     /**
      * path to executable
@@ -35,6 +38,19 @@ class Wkhtmltopdf
      */
     const ORIENTATION_PORTRAIT = 'Portrait';    // vertical
     const ORIENTATION_LANDSCAPE = 'Landscape';  // horizontal
+
+    /**
+     * default margins
+     */
+    private static function getDefaultMargins()
+    {
+        return array(
+            'top' => null,
+            'bottom' => null,
+            'left' => null,
+            'right' => null,
+        );
+    }
 
     /**
      * page sizes
@@ -76,6 +92,10 @@ class Wkhtmltopdf
             $this->setTOC($options['toc']);
         }
 
+        if (array_key_exists('margins', $options)) {
+            $this->setMargins($options['margins']);
+        }
+
         if (array_key_exists('binpath', $options)) {
             $this->setBinPath($options['binpath']);
         }
@@ -87,13 +107,18 @@ class Wkhtmltopdf
         if (array_key_exists('title', $options)) {
             $this->setTitle($options['title']);
         }
-        
+
         if (array_key_exists('footer_html', $options)) {
             $this->setFooterHtml($options['footer_html']);
         }
 
         if (!array_key_exists('path', $options)) {
             throw new Exception("Path to directory where to store files is not set");
+        }
+
+        if (!is_writable($options['path']))
+        {
+            throw new Exception("Path to directory where to store files is not writable");
         }
 
         $this->setPath($options['path']);
@@ -173,6 +198,36 @@ class Wkhtmltopdf
     }
 
     /**
+     * Sets the PDF margins
+     *
+     * @author Clement Herreman <clement.herreman[at]gmail>
+     * @param $margins array<position => value> The margins.
+     *   * Possible <position> :
+     *     * top    : sets the margin on the top of the PDF
+     *     * bottom : sets the margin on the bottom of the PDF
+     *     * left   : sets the margin on the left of the PDF
+     *     * right  : sets the margin on the right of the PDF
+     *   * Value : size of the margin (positive integer). Null to leave the default one.
+     * @return Wkhtmltopdf $this
+     */
+    public function setMargins($margins)
+    {
+        $this->_margins = array_merge(self::getDefaultMargins(), $margins);
+    }
+
+    /**
+     * Sets the PDF margins
+     *
+     * @author Clement Herreman <clement.herreman[at]gmail>
+     * @return array See $this->setMargins()
+     * @see $this->setMargins()
+     */
+    public function getMargins()
+    {
+        return $this->_margins;
+    }
+
+    /**
      * set HTML content to render
      *
      * @author aur1mas <aur1mas@devnet.lt>
@@ -196,7 +251,7 @@ class Wkhtmltopdf
         return $this->_html;
     }
 
-	/**
+    /**
      * set URL to render
      *
      * @author Charles SANQUER
@@ -219,7 +274,7 @@ class Wkhtmltopdf
     {
         return $this->_url;
     }
-    
+
     /**
      * Absolute path where to store files
      *
@@ -316,7 +371,7 @@ class Wkhtmltopdf
     {
         return $this->_toc;
     }
-    
+
     /**
      * returns bin path
      *
@@ -325,9 +380,9 @@ class Wkhtmltopdf
      */
     public function getBinPath()
     {
-    	return $this->_bin;
+        return $this->_bin;
     }
-    
+
     /**
      * returns bin path
      *
@@ -336,12 +391,12 @@ class Wkhtmltopdf
      */
     public function setBinPath($path)
     {
-    	if (file_exists($path))
-    	{
-    		$this->_bin = (string)$path;
-    	}
-   	
-    	return $this;
+        if (file_exists($path))
+        {
+            $this->_bin = (string)$path;
+        }
+
+        return $this;
     }
 
     /**
@@ -417,11 +472,11 @@ class Wkhtmltopdf
 
         throw new Exception("Title is not set");
     }
-    
+
     /**
      *  set footer html
      *
-     * @param string $footer 
+     * @param string $footer
      * @return Wkthmltopdf
      * @author aur1mas <aur1mas@devnet.lt>
      */
@@ -430,7 +485,7 @@ class Wkhtmltopdf
         $this->_footerHtml = (string)$footer;
         return $this;
     }
-    
+
     /**
      * get footer html
      *
@@ -441,11 +496,11 @@ class Wkhtmltopdf
     {
         return $this->_footerHtml;
     }
-    
+
     /**
      * set http username
      *
-     * @param string $username 
+     * @param string $username
      * @return Wkthmltopdf
      * @author aur1mas <aur1mas@devnet.lt>
      */
@@ -454,7 +509,7 @@ class Wkhtmltopdf
         $this->_username = (string)$username;
         return $this;
     }
-    
+
     /**
      * get http username
      *
@@ -465,11 +520,11 @@ class Wkhtmltopdf
     {
         return $this->_username;
     }
-    
+
     /**
      * set http password
      *
-     * @param string $password 
+     * @param string $password
      * @return Wkthmltopdf
      * @author aur1mas <aur1mas@devnet.lt>
      */
@@ -478,7 +533,7 @@ class Wkhtmltopdf
         $this->_password = (string)$password;
         return $this;
     }
-    
+
     /**
      * get http password
      *
@@ -503,12 +558,18 @@ class Wkhtmltopdf
         $command .= ($this->getCopies() > 1) ? " --copies " . $this->getCopies() : "";
         $command .= " --orientation " . $this->getOrientation();
         $command .= " --page-size " . $this->getPageSize();
+
+        foreach($this->_margins as $position => $margin)
+        {
+            $command .= (!is_null($margin)) ? sprintf(' --margin-%s %s', $position, $margin) : '';
+        }
+
         $command .= ($this->getTOC()) ? " --toc" : "";
         $command .= ($this->getGrayscale()) ? " --grayscale" : "";
         $command .= (mb_strlen($this->getPassword()) > 0) ? " --password " . $this->getPassword() . "" : "";
         $command .= (mb_strlen($this->getUsername()) > 0) ? " --username " . $this->getUsername() . "" : "";
         $command .= (mb_strlen($this->getFooterHtml()) > 0) ? " --margin-bottom 20 --footer-html \"" . $this->getFooterHtml() . "\"" : "";
-        
+
         /*
          * ignore some errors with some urls as recommended with this wkhtmltopdf error message
          *
@@ -517,7 +578,7 @@ class Wkhtmltopdf
         if ($this->getUrl()) {
             // $command .= ' --load-error-handling ignore';
         }
-        
+
         $command .= ' --title "' . $this->getTitle() . '"';
         $command .= ' "%input%"';
         $command .= " -";
@@ -543,7 +604,7 @@ class Wkhtmltopdf
             file_put_contents($this->getFilePath(), $this->getHtml());
             $input = $this->getFilePath();
         }
-        
+
         $content = $this->_exec(str_replace('%input%', $input, $this->_getCommand()));
 
         if (strpos(mb_strtolower($content['stderr']), 'error'))
@@ -615,8 +676,8 @@ class Wkhtmltopdf
             case self::MODE_SAVE:
                 file_put_contents($this->getPath() . $filename, $this->_render());
                 $filepath = $this->getFilePath();
-                    if (!empty($filepath))
-                        unlink($filepath);
+                    //if (!empty($filepath))
+                        //unlink($filepath);
                 break;
             default:
                 throw new Exception("Mode: " . $mode . " is not supported");
