@@ -25,7 +25,7 @@ class Wkhtmltopdf
     protected $_footerHtml;
     protected $_username;
     protected $_password;
-    protected $_margins;
+    protected $_margins = array('top' => null, 'bottom' => null, 'left' => null, 'right' => null);
 
     /**
      * path to executable
@@ -38,19 +38,6 @@ class Wkhtmltopdf
      */
     const ORIENTATION_PORTRAIT = 'Portrait';    // vertical
     const ORIENTATION_LANDSCAPE = 'Landscape';  // horizontal
-
-    /**
-     * default margins
-     */
-    private static function getDefaultMargins()
-    {
-        return array(
-            'top' => null,
-            'bottom' => null,
-            'left' => null,
-            'right' => null,
-        );
-    }
 
     /**
      * page sizes
@@ -212,7 +199,8 @@ class Wkhtmltopdf
      */
     public function setMargins($margins)
     {
-        $this->_margins = array_merge(self::getDefaultMargins(), $margins);
+        $this->_margins = array_merge($this->_margins, $margins);
+        return $this;
     }
 
     /**
@@ -559,8 +547,7 @@ class Wkhtmltopdf
         $command .= " --orientation " . $this->getOrientation();
         $command .= " --page-size " . $this->getPageSize();
 
-        foreach($this->_margins as $position => $margin)
-        {
+        foreach($this->getMargins() as $position => $margin) {
             $command .= (!is_null($margin)) ? sprintf(' --margin-%s %s', $position, $margin) : '';
         }
 
@@ -569,15 +556,6 @@ class Wkhtmltopdf
         $command .= (mb_strlen($this->getPassword()) > 0) ? " --password " . $this->getPassword() . "" : "";
         $command .= (mb_strlen($this->getUsername()) > 0) ? " --username " . $this->getUsername() . "" : "";
         $command .= (mb_strlen($this->getFooterHtml()) > 0) ? " --margin-bottom 20 --footer-html \"" . $this->getFooterHtml() . "\"" : "";
-
-        /*
-         * ignore some errors with some urls as recommended with this wkhtmltopdf error message
-         *
-         * Error: Failed loading page <url> (sometimes it will work just to ignore this error with --load-error-handling ignore)
-         */
-        if ($this->getUrl()) {
-            // $command .= ' --load-error-handling ignore';
-        }
 
         $command .= ' --title "' . $this->getTitle() . '"';
         $command .= ' "%input%"';
