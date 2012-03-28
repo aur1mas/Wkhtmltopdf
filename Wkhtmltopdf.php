@@ -458,7 +458,6 @@ class Wkhtmltopdf
             return $this->_title;
         }
 
-        throw new Exception("Title is not set");
     }
 
     /**
@@ -557,7 +556,7 @@ class Wkhtmltopdf
         $command .= (mb_strlen($this->getUsername()) > 0) ? " --username " . $this->getUsername() . "" : "";
         $command .= (mb_strlen($this->getFooterHtml()) > 0) ? " --margin-bottom 20 --footer-html \"" . $this->getFooterHtml() . "\"" : "";
 
-        $command .= ' --title "' . $this->getTitle() . '"';
+        $command .= ($this->getTitle()) ? ' --title "' . $this->getTitle() . '"' : '';
         $command .= ' "%input%"';
         $command .= " -";
 
