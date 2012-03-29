@@ -21,6 +21,7 @@ class Wkhtmltopdf
     protected $_copies = 1;
     protected $_grayscale = false;
     protected $_title = null;
+    protected $_xvfb = false;
     protected $_path;               // path to directory where to place files
     protected $_footerHtml;
     protected $_username;
@@ -97,6 +98,10 @@ class Wkhtmltopdf
 
         if (array_key_exists('footer_html', $options)) {
             $this->setFooterHtml($options['footer_html']);
+        }
+
+        if (array_key_exists('xvfb', $options)) {
+            $this->setRunInVirtualX($options['xvfb']);
         }
 
         if (!array_key_exists('path', $options)) {
@@ -434,6 +439,29 @@ class Wkhtmltopdf
     }
 
     /**
+     * If TRUE, runs wkhtmltopdf in a virtual X session.
+     *
+     * @param bool $xvfb
+     * @return Wkthmltopdf
+     */
+    public function setRunInVirtualX($xvfb)
+    {
+        $this->_xvfb = (bool)$xvfb;
+        return $this;
+    }
+
+    /**
+     * If TRUE, runs wkhtmltopdf in a virtual X session.
+     *
+     * @return bool
+     */
+    public function getRunInVirtualX()
+    {
+      if ( $this->_xvfb )
+        return $this->_xvfb;
+    }
+
+    /**
      * PDF title
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $title
@@ -559,7 +587,8 @@ class Wkhtmltopdf
         $command .= ($this->getTitle()) ? ' --title "' . $this->getTitle() . '"' : '';
         $command .= ' "%input%"';
         $command .= " -";
-
+        if ( $this->getRunInVirtualX() )
+          $command = 'xvfb-run ' . $command;
         return $command;
     }
 
