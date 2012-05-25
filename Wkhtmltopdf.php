@@ -26,12 +26,14 @@ class Wkhtmltopdf
     protected $_footerHtml;
     protected $_username;
     protected $_password;
+    protected $_windowStatus;
     protected $_margins = array('top' => null, 'bottom' => null, 'left' => null, 'right' => null);
 
     /**
      * path to executable
      */
     protected $_bin = '/usr/bin/wkhtmltopdf';
+	//protected $_bin = '/var/www/develop/bin/wkhtmltopdf-amd64 --window-status atlas_ready';
     protected $_filename = null;                // filename in $path directory
 
     /**
@@ -86,6 +88,10 @@ class Wkhtmltopdf
 
         if (array_key_exists('binpath', $options)) {
             $this->setBinPath($options['binpath']);
+        }
+		
+		if (array_key_exists('window-status', $options)) {
+            $this->setWindowStatus($options['window-status']);
         }
 
         if (array_key_exists('grayscale', $options)) {
@@ -219,8 +225,33 @@ class Wkhtmltopdf
     {
         return $this->_margins;
     }
-
-    /**
+	
+	/*
+	 * set WKHtmlToPdf to wait when `windiw.status` on selected page changes to setted status, and after that render PDF
+     *
+     * @author Roman M. Kos <roman[at]c-o-s.name>
+     * @param string $windowStatus	-we add a `--window-status {$windowStatus}` for execution to `$this->_bin`
+     * @return Wkthmltopdf
+     */
+	public function setWindowStatus($windowStatus)
+	{
+		$this->_windowStatus = (string) $windowStatus;
+        return $this;
+	}
+	
+	/**
+     * Sets the PDF margins
+     *
+     * @author Roman M. Kos <roman[at]c-o-s.name>
+     * @return string See $this->setWindowStatus()
+     * @see $this->setWindowStatus()
+     */
+    public function getWindowStatus()
+	{
+		return $this->_windowStatus;
+	}
+	
+	/**
      * set HTML content to render
      *
      * @author aur1mas <aur1mas@devnet.lt>
@@ -578,6 +609,7 @@ class Wkhtmltopdf
             $command .= (!is_null($margin)) ? sprintf(' --margin-%s %s', $position, $margin) : '';
         }
 
+		$command .= ($this->getWindowStatus()) ? " --window-status ".$this->getWindowStatus()."" : "";
         $command .= ($this->getTOC()) ? " --toc" : "";
         $command .= ($this->getGrayscale()) ? " --grayscale" : "";
         $command .= (mb_strlen($this->getPassword()) > 0) ? " --password " . $this->getPassword() . "" : "";
