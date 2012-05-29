@@ -33,7 +33,6 @@ class Wkhtmltopdf
      * path to executable
      */
     protected $_bin = '/usr/bin/wkhtmltopdf';
-	//protected $_bin = '/var/www/develop/bin/wkhtmltopdf-amd64 --window-status atlas_ready';
     protected $_filename = null;                // filename in $path directory
 
     /**
@@ -90,7 +89,7 @@ class Wkhtmltopdf
             $this->setBinPath($options['binpath']);
         }
 		
-		if (array_key_exists('window-status', $options)) {
+	if (array_key_exists('window-status', $options)) {
             $this->setWindowStatus($options['window-status']);
         }
 
@@ -226,20 +225,20 @@ class Wkhtmltopdf
         return $this->_margins;
     }
 	
-	/*
-	 * set WKHtmlToPdf to wait when `windiw.status` on selected page changes to setted status, and after that render PDF
+    /**
+     * set WKHtmlToPdf to wait when `windiw.status` on selected page changes to setted status, and after that render PDF
      *
      * @author Roman M. Kos <roman[at]c-o-s.name>
      * @param string $windowStatus	-we add a `--window-status {$windowStatus}` for execution to `$this->_bin`
      * @return Wkthmltopdf
      */
-	public function setWindowStatus($windowStatus)
-	{
-		$this->_windowStatus = (string) $windowStatus;
+    public function setWindowStatus($windowStatus)
+    {
+        $this->_windowStatus = (string) $windowStatus;
         return $this;
-	}
+    }
 	
-	/**
+    /**
      * Sets the PDF margins
      *
      * @author Roman M. Kos <roman[at]c-o-s.name>
@@ -247,11 +246,11 @@ class Wkhtmltopdf
      * @see $this->setWindowStatus()
      */
     public function getWindowStatus()
-	{
-		return $this->_windowStatus;
-	}
+    {
+	return $this->_windowStatus;
+    }
 	
-	/**
+    /**
      * set HTML content to render
      *
      * @author aur1mas <aur1mas@devnet.lt>
