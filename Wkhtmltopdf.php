@@ -21,10 +21,12 @@ class Wkhtmltopdf
     protected $_copies = 1;
     protected $_grayscale = false;
     protected $_title = null;
+    protected $_xvfb = false;
     protected $_path;               // path to directory where to place files
     protected $_footerHtml;
     protected $_username;
     protected $_password;
+    protected $_windowStatus;
     protected $_margins = array('top' => null, 'bottom' => null, 'left' => null, 'right' => null);
 
     /**
@@ -86,6 +88,10 @@ class Wkhtmltopdf
         if (array_key_exists('binpath', $options)) {
             $this->setBinPath($options['binpath']);
         }
+		
+	if (array_key_exists('window-status', $options)) {
+            $this->setWindowStatus($options['window-status']);
+        }
 
         if (array_key_exists('grayscale', $options)) {
             $this->setGrayscale($options['grayscale']);
@@ -97,6 +103,10 @@ class Wkhtmltopdf
 
         if (array_key_exists('footer_html', $options)) {
             $this->setFooterHtml($options['footer_html']);
+        }
+
+        if (array_key_exists('xvfb', $options)) {
+            $this->setRunInVirtualX($options['xvfb']);
         }
 
         if (!array_key_exists('path', $options)) {
@@ -214,7 +224,32 @@ class Wkhtmltopdf
     {
         return $this->_margins;
     }
-
+	
+    /**
+     * set WKHtmlToPdf to wait when `windiw.status` on selected page changes to setted status, and after that render PDF
+     *
+     * @author Roman M. Kos <roman[at]c-o-s.name>
+     * @param string $windowStatus	-we add a `--window-status {$windowStatus}` for execution to `$this->_bin`
+     * @return Wkthmltopdf
+     */
+    public function setWindowStatus($windowStatus)
+    {
+        $this->_windowStatus = (string) $windowStatus;
+        return $this;
+    }
+	
+    /**
+     * Sets the PDF margins
+     *
+     * @author Roman M. Kos <roman[at]c-o-s.name>
+     * @return string See $this->setWindowStatus()
+     * @see $this->setWindowStatus()
+     */
+    public function getWindowStatus()
+    {
+	return $this->_windowStatus;
+    }
+	
     /**
      * set HTML content to render
      *
@@ -434,6 +469,29 @@ class Wkhtmltopdf
     }
 
     /**
+     * If TRUE, runs wkhtmltopdf in a virtual X session.
+     *
+     * @param bool $xvfb
+     * @return Wkthmltopdf
+     */
+    public function setRunInVirtualX($xvfb)
+    {
+        $this->_xvfb = (bool)$xvfb;
+        return $this;
+    }
+
+    /**
+     * If TRUE, runs wkhtmltopdf in a virtual X session.
+     *
+     * @return bool
+     */
+    public function getRunInVirtualX()
+    {
+      if ( $this->_xvfb )
+        return $this->_xvfb;
+    }
+
+    /**
      * PDF title
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $title
@@ -458,7 +516,6 @@ class Wkhtmltopdf
             return $this->_title;
         }
 
-        throw new Exception("Title is not set");
     }
 
     /**
@@ -551,16 +608,18 @@ class Wkhtmltopdf
             $command .= (!is_null($margin)) ? sprintf(' --margin-%s %s', $position, $margin) : '';
         }
 
+		$command .= ($this->getWindowStatus()) ? " --window-status ".$this->getWindowStatus()."" : "";
         $command .= ($this->getTOC()) ? " --toc" : "";
         $command .= ($this->getGrayscale()) ? " --grayscale" : "";
         $command .= (mb_strlen($this->getPassword()) > 0) ? " --password " . $this->getPassword() . "" : "";
         $command .= (mb_strlen($this->getUsername()) > 0) ? " --username " . $this->getUsername() . "" : "";
         $command .= (mb_strlen($this->getFooterHtml()) > 0) ? " --margin-bottom 20 --footer-html \"" . $this->getFooterHtml() . "\"" : "";
 
-        $command .= ' --title "' . $this->getTitle() . '"';
+        $command .= ($this->getTitle()) ? ' --title "' . $this->getTitle() . '"' : '';
         $command .= ' "%input%"';
         $command .= " -";
-
+        if ( $this->getRunInVirtualX() )
+          $command = 'xvfb-run ' . $command;
         return $command;
     }
 
