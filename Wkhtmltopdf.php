@@ -23,6 +23,7 @@ class Wkhtmltopdf
     protected $_title = null;
     protected $_xvfb = false;
     protected $_path;               // path to directory where to place files
+    protected $_zoom = 1;
     protected $_footerHtml;
     protected $_username;
     protected $_password;
@@ -373,6 +374,27 @@ class Wkhtmltopdf
     }
 
     /**
+     * @author rikw22 <ricardoa.walter@gmail.com>
+     * @return string
+     */
+    public function setZoom($zoom)
+    {
+        $this->_zoom = $zoom;
+        return $this;
+    }
+
+    /**
+     * returns zoom level
+     *
+     * @author rikw22 <ricardoa.walter@gmail.com>
+     * @return int
+     */
+    public function getZoom()
+    {
+        return $this->_zoom;
+    }
+
+    /**
      * enable / disable generation Table Of Contents
      * @author aur1mas <aur1mas@devnet.lt>
      * @param boolean $toc
@@ -603,6 +625,7 @@ class Wkhtmltopdf
         $command .= ($this->getCopies() > 1) ? " --copies " . $this->getCopies() : "";
         $command .= " --orientation " . $this->getOrientation();
         $command .= " --page-size " . $this->getPageSize();
+        $command .= " --zoom " . $this->getZoom();
 
         foreach($this->getMargins() as $position => $margin) {
             $command .= (!is_null($margin)) ? sprintf(' --margin-%s %s', $position, $margin) : '';
