@@ -216,7 +216,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * Sets the PDF margins
+     * Gets the PDF margins
      *
      * @author Clement Herreman <clement.herreman[at]gmail>
      * @return array See $this->setMargins()
@@ -252,7 +252,7 @@ class Wkhtmltopdf
     }
 	
     /**
-     * set WKHtmlToPdf to wait when `windiw.status` on selected page changes to setted status, and after that render PDF
+     * set WKHtmlToPdf to wait when `window.status` on selected page changes to setted status, and after that render pdf
      *
      * @author Roman M. Kos <roman[at]c-o-s.name>
      * @param string $windowStatus	-we add a `--window-status {$windowStatus}` for execution to `$this->_bin`
@@ -265,7 +265,7 @@ class Wkhtmltopdf
     }
 	
     /**
-     * Sets the PDF margins
+     * Get the window status.
      *
      * @author Roman M. Kos <roman[at]c-o-s.name>
      * @return string See $this->setWindowStatus()
