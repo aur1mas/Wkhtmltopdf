@@ -29,6 +29,7 @@ class Wkhtmltopdf
     protected $_password;
     protected $_windowStatus;
     protected $_margins = array('top' => null, 'bottom' => null, 'left' => null, 'right' => null);
+    protected $_options = array();
 
     /**
      * path to executable
@@ -224,6 +225,30 @@ class Wkhtmltopdf
     public function getMargins()
     {
         return $this->_margins;
+    }
+
+    /**
+     * Sets additional command line options.
+     *
+     * @param $options array<option => value> The additional options to set.
+     *   For command line options with no value, set $options value to NULL.
+     * @return Wkhtmltopdf $this
+     */
+    public function setOptions($options)
+    {
+        $this->_options = array_merge($this->_options, $options);
+        return $this;
+    }
+
+    /**
+     * Gets the custom command line options
+     *
+     * @return array See $this->setOptions()
+     * @see $this->setOptions()
+     */
+    public function getOptions()
+    {
+        return $this->_options;
     }
 	
     /**
@@ -629,6 +654,10 @@ class Wkhtmltopdf
 
         foreach($this->getMargins() as $position => $margin) {
             $command .= (!is_null($margin)) ? sprintf(' --margin-%s %s', $position, $margin) : '';
+        }
+
+        foreach ($this->getOptions() as $key => $value) {
+            $command .= " --$key $value";
         }
 
 		$command .= ($this->getWindowStatus()) ? " --window-status ".$this->getWindowStatus()."" : "";
