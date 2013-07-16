@@ -377,6 +377,8 @@ class Wkhtmltopdf
     }
 
     /**
+     * Sets the page size.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $size
      * @return Wkthmltopdf
@@ -399,6 +401,8 @@ class Wkhtmltopdf
     }
 
     /**
+     * Set the zoom level.
+     *
      * @author rikw22 <ricardoa.walter@gmail.com>
      * @return string
      */
@@ -709,6 +713,8 @@ class Wkhtmltopdf
     }
 
     /**
+     * Create the PDF file.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param int $mode
      * @param string $filename
