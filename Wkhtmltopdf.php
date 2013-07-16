@@ -335,8 +335,9 @@ class Wkhtmltopdf
      */
     public function setPath($path)
     {
-        if (realpath($path) === false)
+        if (realpath($path) === false) {
             throw new Exception("Path must be absolute");
+        }
 
         $this->_path = realpath($path) . DIRECTORY_SEPARATOR;
         return $this;
@@ -540,8 +541,9 @@ class Wkhtmltopdf
      */
     public function getRunInVirtualX()
     {
-      if ( $this->_xvfb )
-        return $this->_xvfb;
+        if ($this->_xvfb) {
+            return $this->_xvfb;
+        }
     }
 
     /**
@@ -676,8 +678,9 @@ class Wkhtmltopdf
         $command .= ($this->getTitle()) ? ' --title "' . $this->getTitle() . '"' : '';
         $command .= ' "%input%"';
         $command .= " -";
-        if ( $this->getRunInVirtualX() )
-          $command = 'xvfb-run ' . $command;
+        if ($this->getRunInVirtualX()) {
+            $command = 'xvfb-run ' . $command;
+        }
         return $command;
     }
 
@@ -690,8 +693,9 @@ class Wkhtmltopdf
      */
     protected function _render()
     {
-        if (mb_strlen($this->_html, 'utf-8') === 0 && empty($this->_url))
+        if (mb_strlen($this->_html, 'utf-8') === 0 && empty($this->_url)) {
             throw new Exception("HTML content or source URL not set");
+        }
 
         if ($this->getUrl()) {
             $input = $this->getUrl();
@@ -702,14 +706,17 @@ class Wkhtmltopdf
 
         $content = $this->_exec(str_replace('%input%', $input, $this->_getCommand()));
 
-        if (strpos(mb_strtolower($content['stderr']), 'error'))
-                throw new Exception("System error <pre>" . $content['stderr'] . "</pre>");
+        if (strpos(mb_strtolower($content['stderr']), 'error')) {
+            throw new Exception("System error <pre>" . $content['stderr'] . "</pre>");
+        }
 
-        if (mb_strlen($content['stdout'], 'utf-8') === 0)
-               throw new Exception("WKHTMLTOPDF didn't return any data");
+        if (mb_strlen($content['stdout'], 'utf-8') === 0) {
+            throw new Exception("WKHTMLTOPDF didn't return any data");
+        }
 
-        if ((int)$content['return'] > 1)
+        if ((int)$content['return'] > 1) {
             throw new Exception("Shell error, return code: " . (int)$content['return']);
+        }
 
         return $content['stdout'];
     }
@@ -763,8 +770,9 @@ class Wkhtmltopdf
                     header('Content-Disposition: inline; filename="' . basename($filename) .'";');
                     echo $result;
                     $filepath = $this->getFilePath();
-                    if (!empty($filepath))
+                    if (!empty($filepath)) {
                         unlink($filepath);
+                    }
                     exit();
                 } else {
                     throw new Exception("Headers already sent");
@@ -773,8 +781,9 @@ class Wkhtmltopdf
             case self::MODE_SAVE:
                 file_put_contents($this->getPath() . $filename, $this->_render());
                 $filepath = $this->getFilePath();
-                    if (!empty($filepath))
-                        unlink($filepath);
+                if (!empty($filepath)) {
+                    unlink($filepath);
+                }
                 break;
             default:
                 throw new Exception("Mode: " . $mode . " is not supported");
