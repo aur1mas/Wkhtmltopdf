@@ -11,7 +11,7 @@
 class Wkhtmltopdf
 {
     /**
-     * setters / getters properties
+     * Setters / Getters properties.
      */
     protected $_html = null;
     protected $_url = null;
@@ -32,25 +32,25 @@ class Wkhtmltopdf
     protected $_options = array();
 
     /**
-     * path to executable
+     * Path to executable.
      */
     protected $_bin = '/usr/bin/wkhtmltopdf';
     protected $_filename = null;                // filename in $path directory
 
     /**
-     * available page orientations
+     * Available page orientations.
      */
     const ORIENTATION_PORTRAIT = 'Portrait';    // vertical
     const ORIENTATION_LANDSCAPE = 'Landscape';  // horizontal
 
     /**
-     * page sizes
+     * Page sizes.
      */
     const SIZE_A4 = 'A4';
     const SIZE_LETTER = 'letter';
 
     /**
-     * file get modes
+     * File get modes.
      */
     const MODE_DOWNLOAD = 0;
     const MODE_STRING = 1;
@@ -126,7 +126,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * creates file to which will be writen html content
+     * Creates file to which will be writen HTML content.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -147,7 +147,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns file path where html content is saved
+     * Returns file path where HTML content is saved.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -158,7 +158,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * executes command
+     * Executes command.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $cmd   command to execute
@@ -185,7 +185,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns help info
+     * Returns help info.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -197,7 +197,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * Sets the PDF margins
+     * Sets the PDF margins.
      *
      * @author Clement Herreman <clement.herreman[at]gmail>
      * @param $margins array<position => value> The margins.
@@ -216,7 +216,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * Gets the PDF margins
+     * Gets the PDF margins.
      *
      * @author Clement Herreman <clement.herreman[at]gmail>
      * @return array See $this->setMargins()
@@ -241,7 +241,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * Gets the custom command line options
+     * Gets the custom command line options.
      *
      * @return array See $this->setOptions()
      * @see $this->setOptions()
@@ -252,7 +252,7 @@ class Wkhtmltopdf
     }
 	
     /**
-     * set WKHtmlToPdf to wait when `window.status` on selected page changes to setted status, and after that render pdf
+     * Set wkhtmltopdf to wait when `window.status` on selected page changes to setted status, and after that render PDF.
      *
      * @author Roman M. Kos <roman[at]c-o-s.name>
      * @param string $windowStatus	-we add a `--window-status {$windowStatus}` for execution to `$this->_bin`
@@ -277,7 +277,7 @@ class Wkhtmltopdf
     }
 	
     /**
-     * set HTML content to render
+     * Set HTML content to render.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $html
@@ -290,7 +290,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns HTML content
+     * Returns HTML content.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -301,7 +301,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * set URL to render
+     * Set URL to render.
      *
      * @author Charles SANQUER
      * @param string $html
@@ -314,7 +314,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns URL
+     * Returns URL.
      *
      * @author Charles SANQUER
      * @return string
@@ -325,7 +325,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * Absolute path where to store files
+     * Absolute path where to store files.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @throws Exception
@@ -342,7 +342,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns path where to store saved files
+     * Returns path where to store saved files.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -353,7 +353,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * set page orientation
+     * Set page orientation.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $orientation
@@ -366,7 +366,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns page orientation
+     * Returns page orientation.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -390,7 +390,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns page size
+     * Returns page size.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return int
@@ -413,7 +413,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns zoom level
+     * Returns zoom level.
      *
      * @author rikw22 <ricardoa.walter@gmail.com>
      * @return int
@@ -424,7 +424,8 @@ class Wkhtmltopdf
     }
 
     /**
-     * enable / disable generation Table Of Contents
+     * Enable / disable generation Table Of Contents.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param boolean $toc
      * @return Wkhtmltopdf
@@ -436,7 +437,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns value is enabled Table Of Contents generation or not
+     * Returns value is enabled Table Of Contents generation or not.
      *
      * @author aur1nas <aur1mas@devnet.lt>
      * @return boolean
@@ -447,7 +448,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns bin path
+     * Returns bin path.
      *
      * @author heliocorreia <dev@heliocorreia.org>
      * @return string
@@ -458,7 +459,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns bin path
+     * Returns bin path.
      *
      * @author heliocorreia <dev@heliocorreia.org>
      * @return string
@@ -474,7 +475,8 @@ class Wkhtmltopdf
     }
 
     /**
-     * set number of copies
+     * Set number of copies.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param int $copies
      * @return Wkthmltopdf
@@ -486,7 +488,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns  number of copies to make
+     * Returns  number of copies to make.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return int
@@ -497,7 +499,8 @@ class Wkhtmltopdf
     }
 
     /**
-     * whether to print in grayscale or not
+     * Whether to print in grayscale or not.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param boolean $mode
      * @return Wkthmltopdf
@@ -509,7 +512,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns is page will be printed in grayscale format
+     * Returns is page will be printed in grayscale format.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return boolean
@@ -543,7 +546,8 @@ class Wkhtmltopdf
     }
 
     /**
-     * PDF title
+     * Set the PDF title.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $title
      * @return Wkthmltopdf
@@ -555,7 +559,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns PDF document title
+     * Returns PDF document title.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @throws Exception
@@ -570,7 +574,7 @@ class Wkhtmltopdf
     }
 
     /**
-     *  set footer html
+     * Set footer html.
      *
      * @param string $footer
      * @return Wkthmltopdf
@@ -583,7 +587,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * get footer html
+     * Get footer html.
      *
      * @return string
      * @author aur1mas <aur1mas@devnet.lt>
@@ -594,7 +598,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * set http username
+     * Set HTTP username.
      *
      * @param string $username
      * @return Wkthmltopdf
@@ -607,7 +611,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * get http username
+     * Get HTTP username.
      *
      * @return string
      * @author aur1mas <aur1mas@devnet.lt>
@@ -618,7 +622,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * set http password
+     * Set http password.
      *
      * @param string $password
      * @return Wkthmltopdf
@@ -631,7 +635,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * get http password
+     * Get http password.
      *
      * @return string
      * @author aur1mas <aur1mas@devnet.lt>
@@ -642,7 +646,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns command to execute
+     * Returns command to execute.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
