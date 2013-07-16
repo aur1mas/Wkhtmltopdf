@@ -90,8 +90,8 @@ class Wkhtmltopdf
         if (array_key_exists('binpath', $options)) {
             $this->setBinPath($options['binpath']);
         }
-		
-	if (array_key_exists('window-status', $options)) {
+
+        if (array_key_exists('window-status', $options)) {
             $this->setWindowStatus($options['window-status']);
         }
 
@@ -250,12 +250,13 @@ class Wkhtmltopdf
     {
         return $this->_options;
     }
-	
+
     /**
      * Set wkhtmltopdf to wait when `window.status` on selected page changes to setted status, and after that render PDF.
      *
      * @author Roman M. Kos <roman[at]c-o-s.name>
-     * @param string $windowStatus	-we add a `--window-status {$windowStatus}` for execution to `$this->_bin`
+     * @param string $windowStatus
+     *    we add a `--window-status {$windowStatus}` for execution to `$this->_bin`
      * @return Wkthmltopdf
      */
     public function setWindowStatus($windowStatus)
@@ -263,7 +264,7 @@ class Wkhtmltopdf
         $this->_windowStatus = (string) $windowStatus;
         return $this;
     }
-	
+
     /**
      * Get the window status.
      *
@@ -273,9 +274,9 @@ class Wkhtmltopdf
      */
     public function getWindowStatus()
     {
-	return $this->_windowStatus;
+        return $this->_windowStatus;
     }
-	
+
     /**
      * Set HTML content to render.
      *
@@ -466,11 +467,9 @@ class Wkhtmltopdf
      */
     public function setBinPath($path)
     {
-        if (file_exists($path))
-        {
+        if (file_exists($path)) {
             $this->_bin = (string)$path;
         }
-
         return $this;
     }
 
@@ -570,7 +569,6 @@ class Wkhtmltopdf
         if ($this->_title) {
             return $this->_title;
         }
-
     }
 
     /**
@@ -668,7 +666,7 @@ class Wkhtmltopdf
             $command .= " --$key $value";
         }
 
-		$command .= ($this->getWindowStatus()) ? " --window-status ".$this->getWindowStatus()."" : "";
+        $command .= ($this->getWindowStatus()) ? " --window-status ".$this->getWindowStatus()."" : "";
         $command .= ($this->getTOC()) ? " --toc" : "";
         $command .= ($this->getGrayscale()) ? " --grayscale" : "";
         $command .= (mb_strlen($this->getPassword()) > 0) ? " --password " . $this->getPassword() . "" : "";
