@@ -11,7 +11,7 @@
 class Wkhtmltopdf
 {
     /**
-     * setters / getters properties
+     * Setters / Getters properties.
      */
     protected $_html = null;
     protected $_url = null;
@@ -29,27 +29,28 @@ class Wkhtmltopdf
     protected $_password;
     protected $_windowStatus;
     protected $_margins = array('top' => null, 'bottom' => null, 'left' => null, 'right' => null);
+    protected $_options = array();
 
     /**
-     * path to executable
+     * Path to executable.
      */
     protected $_bin = '/usr/bin/wkhtmltopdf';
     protected $_filename = null;                // filename in $path directory
 
     /**
-     * available page orientations
+     * Available page orientations.
      */
     const ORIENTATION_PORTRAIT = 'Portrait';    // vertical
     const ORIENTATION_LANDSCAPE = 'Landscape';  // horizontal
 
     /**
-     * page sizes
+     * Page sizes.
      */
     const SIZE_A4 = 'A4';
     const SIZE_LETTER = 'letter';
 
     /**
-     * file get modes
+     * File get modes.
      */
     const MODE_DOWNLOAD = 0;
     const MODE_STRING = 1;
@@ -89,8 +90,8 @@ class Wkhtmltopdf
         if (array_key_exists('binpath', $options)) {
             $this->setBinPath($options['binpath']);
         }
-		
-	if (array_key_exists('window-status', $options)) {
+
+        if (array_key_exists('window-status', $options)) {
             $this->setWindowStatus($options['window-status']);
         }
 
@@ -125,7 +126,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * creates file to which will be writen html content
+     * Creates file to which will be writen HTML content.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -146,7 +147,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns file path where html content is saved
+     * Returns file path where HTML content is saved.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -157,7 +158,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * executes command
+     * Executes command.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $cmd   command to execute
@@ -184,7 +185,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns help info
+     * Returns help info.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -196,7 +197,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * Sets the PDF margins
+     * Sets the PDF margins.
      *
      * @author Clement Herreman <clement.herreman[at]gmail>
      * @param $margins array<position => value> The margins.
@@ -215,7 +216,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * Sets the PDF margins
+     * Gets the PDF margins.
      *
      * @author Clement Herreman <clement.herreman[at]gmail>
      * @return array See $this->setMargins()
@@ -225,12 +226,37 @@ class Wkhtmltopdf
     {
         return $this->_margins;
     }
-	
+
     /**
-     * set WKHtmlToPdf to wait when `windiw.status` on selected page changes to setted status, and after that render PDF
+     * Sets additional command line options.
+     *
+     * @param $options array<option => value> The additional options to set.
+     *   For command line options with no value, set $options value to NULL.
+     * @return Wkhtmltopdf $this
+     */
+    public function setOptions($options)
+    {
+        $this->_options = array_merge($this->_options, $options);
+        return $this;
+    }
+
+    /**
+     * Gets the custom command line options.
+     *
+     * @return array See $this->setOptions()
+     * @see $this->setOptions()
+     */
+    public function getOptions()
+    {
+        return $this->_options;
+    }
+
+    /**
+     * Set wkhtmltopdf to wait when `window.status` on selected page changes to setted status, and after that render PDF.
      *
      * @author Roman M. Kos <roman[at]c-o-s.name>
-     * @param string $windowStatus	-we add a `--window-status {$windowStatus}` for execution to `$this->_bin`
+     * @param string $windowStatus
+     *    we add a `--window-status {$windowStatus}` for execution to `$this->_bin`
      * @return Wkthmltopdf
      */
     public function setWindowStatus($windowStatus)
@@ -238,9 +264,9 @@ class Wkhtmltopdf
         $this->_windowStatus = (string) $windowStatus;
         return $this;
     }
-	
+
     /**
-     * Sets the PDF margins
+     * Get the window status.
      *
      * @author Roman M. Kos <roman[at]c-o-s.name>
      * @return string See $this->setWindowStatus()
@@ -248,11 +274,11 @@ class Wkhtmltopdf
      */
     public function getWindowStatus()
     {
-	return $this->_windowStatus;
+        return $this->_windowStatus;
     }
-	
+
     /**
-     * set HTML content to render
+     * Set HTML content to render.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $html
@@ -265,7 +291,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns HTML content
+     * Returns HTML content.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -276,7 +302,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * set URL to render
+     * Set URL to render.
      *
      * @author Charles SANQUER
      * @param string $html
@@ -289,7 +315,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns URL
+     * Returns URL.
      *
      * @author Charles SANQUER
      * @return string
@@ -300,7 +326,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * Absolute path where to store files
+     * Absolute path where to store files.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @throws Exception
@@ -309,15 +335,16 @@ class Wkhtmltopdf
      */
     public function setPath($path)
     {
-        if (realpath($path) === false)
+        if (realpath($path) === false) {
             throw new Exception("Path must be absolute");
+        }
 
         $this->_path = realpath($path) . DIRECTORY_SEPARATOR;
         return $this;
     }
 
     /**
-     * returns path where to store saved files
+     * Returns path where to store saved files.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -328,7 +355,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * set page orientation
+     * Set page orientation.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $orientation
@@ -341,7 +368,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns page orientation
+     * Returns page orientation.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -352,6 +379,8 @@ class Wkhtmltopdf
     }
 
     /**
+     * Sets the page size.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $size
      * @return Wkthmltopdf
@@ -363,7 +392,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns page size
+     * Returns page size.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return int
@@ -374,6 +403,8 @@ class Wkhtmltopdf
     }
 
     /**
+     * Set the zoom level.
+     *
      * @author rikw22 <ricardoa.walter@gmail.com>
      * @return string
      */
@@ -384,7 +415,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns zoom level
+     * Returns zoom level.
      *
      * @author rikw22 <ricardoa.walter@gmail.com>
      * @return int
@@ -395,7 +426,8 @@ class Wkhtmltopdf
     }
 
     /**
-     * enable / disable generation Table Of Contents
+     * Enable / disable generation Table Of Contents.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param boolean $toc
      * @return Wkhtmltopdf
@@ -407,7 +439,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns value is enabled Table Of Contents generation or not
+     * Returns value is enabled Table Of Contents generation or not.
      *
      * @author aur1nas <aur1mas@devnet.lt>
      * @return boolean
@@ -418,7 +450,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns bin path
+     * Returns bin path.
      *
      * @author heliocorreia <dev@heliocorreia.org>
      * @return string
@@ -429,23 +461,22 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns bin path
+     * Returns bin path.
      *
      * @author heliocorreia <dev@heliocorreia.org>
      * @return string
      */
     public function setBinPath($path)
     {
-        if (file_exists($path))
-        {
+        if (file_exists($path)) {
             $this->_bin = (string)$path;
         }
-
         return $this;
     }
 
     /**
-     * set number of copies
+     * Set number of copies.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param int $copies
      * @return Wkthmltopdf
@@ -457,7 +488,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns  number of copies to make
+     * Returns  number of copies to make.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return int
@@ -468,7 +499,8 @@ class Wkhtmltopdf
     }
 
     /**
-     * whether to print in grayscale or not
+     * Whether to print in grayscale or not.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param boolean $mode
      * @return Wkthmltopdf
@@ -480,7 +512,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns is page will be printed in grayscale format
+     * Returns is page will be printed in grayscale format.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return boolean
@@ -509,12 +541,14 @@ class Wkhtmltopdf
      */
     public function getRunInVirtualX()
     {
-      if ( $this->_xvfb )
-        return $this->_xvfb;
+        if ($this->_xvfb) {
+            return $this->_xvfb;
+        }
     }
 
     /**
-     * PDF title
+     * Set the PDF title.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param string $title
      * @return Wkthmltopdf
@@ -526,7 +560,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns PDF document title
+     * Returns PDF document title.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @throws Exception
@@ -537,11 +571,10 @@ class Wkhtmltopdf
         if ($this->_title) {
             return $this->_title;
         }
-
     }
 
     /**
-     *  set footer html
+     * Set footer html.
      *
      * @param string $footer
      * @return Wkthmltopdf
@@ -554,7 +587,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * get footer html
+     * Get footer html.
      *
      * @return string
      * @author aur1mas <aur1mas@devnet.lt>
@@ -565,7 +598,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * set http username
+     * Set HTTP username.
      *
      * @param string $username
      * @return Wkthmltopdf
@@ -578,7 +611,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * get http username
+     * Get HTTP username.
      *
      * @return string
      * @author aur1mas <aur1mas@devnet.lt>
@@ -589,7 +622,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * set http password
+     * Set http password.
      *
      * @param string $password
      * @return Wkthmltopdf
@@ -602,7 +635,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * get http password
+     * Get http password.
      *
      * @return string
      * @author aur1mas <aur1mas@devnet.lt>
@@ -613,7 +646,7 @@ class Wkhtmltopdf
     }
 
     /**
-     * returns command to execute
+     * Returns command to execute.
      *
      * @author aur1mas <aur1mas@devnet.lt>
      * @return string
@@ -631,7 +664,11 @@ class Wkhtmltopdf
             $command .= (!is_null($margin)) ? sprintf(' --margin-%s %s', $position, $margin) : '';
         }
 
-		$command .= ($this->getWindowStatus()) ? " --window-status ".$this->getWindowStatus()."" : "";
+        foreach ($this->getOptions() as $key => $value) {
+            $command .= " --$key $value";
+        }
+
+        $command .= ($this->getWindowStatus()) ? " --window-status ".$this->getWindowStatus()."" : "";
         $command .= ($this->getTOC()) ? " --toc" : "";
         $command .= ($this->getGrayscale()) ? " --grayscale" : "";
         $command .= (mb_strlen($this->getPassword()) > 0) ? " --password " . $this->getPassword() . "" : "";
@@ -641,8 +678,9 @@ class Wkhtmltopdf
         $command .= ($this->getTitle()) ? ' --title "' . $this->getTitle() . '"' : '';
         $command .= ' "%input%"';
         $command .= " -";
-        if ( $this->getRunInVirtualX() )
-          $command = 'xvfb-run ' . $command;
+        if ($this->getRunInVirtualX()) {
+            $command = 'xvfb-run ' . $command;
+        }
         return $command;
     }
 
@@ -655,8 +693,9 @@ class Wkhtmltopdf
      */
     protected function _render()
     {
-        if (mb_strlen($this->_html, 'utf-8') === 0 && empty($this->_url))
+        if (mb_strlen($this->_html, 'utf-8') === 0 && empty($this->_url)) {
             throw new Exception("HTML content or source URL not set");
+        }
 
         if ($this->getUrl()) {
             $input = $this->getUrl();
@@ -667,19 +706,24 @@ class Wkhtmltopdf
 
         $content = $this->_exec(str_replace('%input%', $input, $this->_getCommand()));
 
-        if (strpos(mb_strtolower($content['stderr']), 'error'))
-                throw new Exception("System error <pre>" . $content['stderr'] . "</pre>");
+        if (strpos(mb_strtolower($content['stderr']), 'error')) {
+            throw new Exception("System error <pre>" . $content['stderr'] . "</pre>");
+        }
 
-        if (mb_strlen($content['stdout'], 'utf-8') === 0)
-               throw new Exception("WKHTMLTOPDF didn't return any data");
+        if (mb_strlen($content['stdout'], 'utf-8') === 0) {
+            throw new Exception("WKHTMLTOPDF didn't return any data");
+        }
 
-        if ((int)$content['return'] > 1)
+        if ((int)$content['return'] > 1) {
             throw new Exception("Shell error, return code: " . (int)$content['return']);
+        }
 
         return $content['stdout'];
     }
 
     /**
+     * Create the PDF file.
+     *
      * @author aur1mas <aur1mas@devnet.lt>
      * @param int $mode
      * @param string $filename
@@ -726,8 +770,9 @@ class Wkhtmltopdf
                     header('Content-Disposition: inline; filename="' . basename($filename) .'";');
                     echo $result;
                     $filepath = $this->getFilePath();
-                    if (!empty($filepath))
+                    if (!empty($filepath)) {
                         unlink($filepath);
+                    }
                     exit();
                 } else {
                     throw new Exception("Headers already sent");
@@ -736,8 +781,9 @@ class Wkhtmltopdf
             case self::MODE_SAVE:
                 file_put_contents($this->getPath() . $filename, $this->_render());
                 $filepath = $this->getFilePath();
-                    if (!empty($filepath))
-                        unlink($filepath);
+                if (!empty($filepath)) {
+                    unlink($filepath);
+                }
                 break;
             default:
                 throw new Exception("Mode: " . $mode . " is not supported");
