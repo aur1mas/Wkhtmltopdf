@@ -645,6 +645,10 @@ class Wkhtmltopdf
         return $this->_password;
     }
 
+    public function getCommand() {
+      return $this->_getCommand();
+    }
+
     /**
      * Returns command to execute.
      *
