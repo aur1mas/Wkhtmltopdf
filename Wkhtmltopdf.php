@@ -29,6 +29,8 @@ class Wkhtmltopdf
     protected $_password;
     protected $_windowStatus;
     protected $_margins = array('top' => null, 'bottom' => null, 'left' => null, 'right' => null);
+	protected $_userStyleSheet = null; // path to user style sheet file
+	protected $_enableSmartShrinking = false; // boolean for smart shrinking, defaults to false
     protected $_options = array();
 
     /**
@@ -111,9 +113,18 @@ class Wkhtmltopdf
             $this->setRunInVirtualX($options['xvfb']);
         }
 
+		if (array_key_exists('user-style-sheet', $options)) {
+            $this->setUserStyleSheet($options['user-style-sheet']);
+        }
+		
+		if (array_key_exists('enable-smart-shrinking', $options)) {
+            $this->setEnableSmartShrinking($options['enable-smart-shrinking']);
+        }
+		
         if (!array_key_exists('path', $options)) {
             throw new Exception("Path to directory where to store files is not set");
         }
+		
 
         if (!is_writable($options['path']))
         {
@@ -275,6 +286,43 @@ class Wkhtmltopdf
         return $this->_margins;
     }
 
+	/**
+     * Enables the use of an user style sheet.
+     *
+     * @author Leo Zandvliet
+     * @param string $path
+     * @return Wkthmltopdf
+     */
+    public function setUserStyleSheet($path)
+    {
+        $this->_userStyleSheet = (string)$path;
+        return $this;
+    }
+	
+	public function getUserStyleSheet()
+	{
+		return $this->_userStyleSheet;
+	}
+	
+	/**
+     * Adds the 'enable-smart-shrinking' option, especially in case it's true.
+     *
+     * @author Leo Zandvliet
+     * @param boolean $value
+     * @return Wkthmltopdf
+     */
+	public function setEnableSmartShrinking($value)
+	{
+		$this->_enableSmartShrinking = (bool)$value;
+        return $this;
+	}
+	
+	public function getEnableSmartShrinking()
+	{
+		return $this->_enableSmartShrinking;
+	}
+	
+	
     /**
      * Sets additional command line options.
      *
@@ -711,6 +759,7 @@ class Wkhtmltopdf
         $command .= " --orientation " . $this->getOrientation();
         $command .= " --page-size " . $this->getPageSize();
         $command .= " --zoom " . $this->getZoom();
+		$command .= ($this->getEnableSmartShrinking()) ? " --enable-smart-shrinking" : "";
 
         foreach($this->getMargins() as $position => $margin) {
             $command .= (!is_null($margin)) ? sprintf(' --margin-%s %s', $position, $margin) : '';
@@ -727,6 +776,8 @@ class Wkhtmltopdf
         $command .= (mb_strlen($this->getUsername()) > 0) ? " --username " . $this->getUsername() . "" : "";
         $command .= (mb_strlen($this->getFooterHtml()) > 0) ? " --margin-bottom 20 --footer-html \"" . $this->getFooterHtml() . "\"" : "";
 
+		$command .= ($this->getUserStyleSheet()) ? " --user-style-sheet ".$this->getUserStyleSheet()."" : "";
+		
         $command .= ($this->getTitle()) ? ' --title "' . $this->getTitle() . '"' : '';
         $command .= ' "%input%"';
         $command .= " -";
@@ -831,7 +882,7 @@ class Wkhtmltopdf
                 }
                 break;
             case self::MODE_SAVE:
-                file_put_contents($this->getPath() . $filename, $this->_render());
+                file_put_contents($this->getPath() . basename($filename), $this->_render());
                 $filepath = $this->getFilePath();
                 if (!empty($filepath)) {
                     unlink($filepath);
