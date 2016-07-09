@@ -24,6 +24,8 @@ class Wkhtmltopdf
     protected $_xvfb = false;
     protected $_path;               // path to directory where to place files
     protected $_zoom = 1;
+	protected $_headerSpacing;
+    protected $_headerHtml;
     protected $_footerHtml;
     protected $_username;
     protected $_password;
@@ -668,7 +670,55 @@ class Wkhtmltopdf
             return $this->_title;
         }
     }
-
+	
+	/**
+     * Set header spacing.
+     *
+     * @param string $spacing
+     * @return Wkthmltopdf
+     * @author amorriscode <glxyds@gmail.com>
+     */
+    public function setHeaderSpacing($spacing)
+    {
+        $this->_headerSpacing = (string)$spacing;
+        return $this;
+    }
+	
+    /**
+     * Get header spacing.
+     *
+     * @return string
+     * @author amorriscode <glxyds@gmail.com>
+     */
+    public function getHeaderSpacing()
+    {
+        return $this->_headerSpacing;
+    }  
+	
+    /**
+     * Set header html.
+     *
+     * @param string $header
+     * @return Wkthmltopdf
+     * @author amorriscode <glxyds@gmail.com>
+     */
+    public function setHeaderHtml($header)
+    {
+        $this->_headerHtml = (string)$header;
+        return $this;
+    }
+	
+    /**
+     * Get header html.
+     *
+     * @return string
+     * @author amorriscode <glxyds@gmail.com>
+     */
+    public function getHeaderHtml()
+    {
+        return $this->_headerHtml;
+    }
+	
     /**
      * Set footer html.
      *
@@ -774,6 +824,8 @@ class Wkhtmltopdf
         $command .= ($this->getGrayscale()) ? " --grayscale" : "";
         $command .= (mb_strlen($this->getPassword()) > 0) ? " --password " . $this->getPassword() . "" : "";
         $command .= (mb_strlen($this->getUsername()) > 0) ? " --username " . $this->getUsername() . "" : "";
+		$command .= (mb_strlen($this->getHeaderSpacing()) > 0) ? " --header-spacing " . $this->getHeaderSpacing() . "" : "";
+        $command .= (mb_strlen($this->getHeaderHtml()) > 0) ? " --header-html \"" . $this->getHeaderHtml() . "\"" : "";
         $command .= (mb_strlen($this->getFooterHtml()) > 0) ? " --margin-bottom 20 --footer-html \"" . $this->getFooterHtml() . "\"" : "";
 
 		$command .= ($this->getUserStyleSheet()) ? " --user-style-sheet ".$this->getUserStyleSheet()."" : "";
